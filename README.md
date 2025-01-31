@@ -1,7 +1,10 @@
 # URL-Shortener
 
-Run the app with
+Run the app with:
+```commandline
 uvicorn main:app --reload
+```
+
 
 
 1. Send POST request to /shorten/:
