@@ -6,11 +6,13 @@ from pydantic import BaseModel, HttpUrl
 from sqlalchemy.orm import Session
 from fastapi.responses import RedirectResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 
 from database import SessionLocal, URL
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 def get_db():
     db = SessionLocal()
@@ -45,7 +47,7 @@ def shorten_url(request: URLRequest, db: Session = Depends(get_db)):
     db_url_entry = URL(shortcode=short_code, long_url=long_url)
     db.add(db_url_entry)
     db.commit()
-    return {"short_url": f"http://127.0.0.1:8000/{short_code}"}
+    return {"short_url": f"http://127.0.0.1:5000/{short_code}"}
 
 
 @app.get("/{short_code}")
@@ -83,7 +85,7 @@ def get_url_stats(short_code: str, db: Session = Depends(get_db)):
     if not db_url_search_result:
         raise HTTPException(status_code=404, detail="No URL found with this short URL")
 
-    return {"short_url": f"http://127.0.0.1:8000/{short_code}",
+    return {"short_url": f"http://127.0.0.1:5000/{short_code}",
             "long_url": str(db_url_search_result.long_url),
             "visit_count": db_url_search_result.visit_count}
 
