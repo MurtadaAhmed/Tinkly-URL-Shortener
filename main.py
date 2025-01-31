@@ -1,6 +1,6 @@
 import string
 import random
-
+import os
 from fastapi import FastAPI, Depends, HTTPException, Request
 from pydantic import BaseModel, HttpUrl
 from sqlalchemy.orm import Session
@@ -10,7 +10,7 @@ from fastapi.staticfiles import StaticFiles
 
 from database import SessionLocal, URL
 
-WEBSITE_URL = r"http://127.0.0.1:5000"
+WEBSITE_URL = os.getenv("WEBSITE_URL","http://127.0.0.1:80")
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
