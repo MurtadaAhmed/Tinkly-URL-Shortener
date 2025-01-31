@@ -1,10 +1,19 @@
 # URL-Shortener
 
+A. Run locally for development:
+```commandline
+pip install -r requirements.txt
+```
 Run the app with:
 ```commandline
 uvicorn main:app --reload --port 5000
 ```
 
+B.Run with docker file:
+```dockerfile
+docker build -t url-shortener .
+docker run -p 5000:5000 url-shortener
+```
 
 
 1. Send POST request to /shorten/ (can be tested using Swagger UI http://127.0.0.1:8000/docs):
