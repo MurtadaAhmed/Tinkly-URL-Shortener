@@ -4,11 +4,13 @@ import random
 from fastapi import FastAPI, Depends, HTTPException, Request
 from pydantic import BaseModel, HttpUrl
 from sqlalchemy.orm import Session
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, HTMLResponse
+from fastapi.templating import Jinja2Templates
 
 from database import SessionLocal, URL
 
 app = FastAPI()
+templates = Jinja2Templates(directory="templates")
 
 def get_db():
     db = SessionLocal()
@@ -25,6 +27,9 @@ def generate_short_code(length=6):
     random_characters = random.choices(characters, k=length) # ['8', 'n', 'p', 'O', 'u', 'c']
     return ''.join(random_characters) # 8npOuc
 
+@app.get("/", response_class=HTMLResponse)
+def home(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
 @app.post("/shorten/")
 def shorten_url(request: URLRequest, db: Session = Depends(get_db)):
