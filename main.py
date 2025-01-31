@@ -1,7 +1,7 @@
 import string
 import random
 
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Request
 from pydantic import BaseModel, HttpUrl
 from sqlalchemy.orm import Session
 from fastapi.responses import RedirectResponse
@@ -44,12 +44,13 @@ def shorten_url(request: URLRequest, db: Session = Depends(get_db)):
 
 
 @app.get("/{short_code}")
-def redirect_to_url(short_code: str, db: Session = Depends(get_db)):
+def redirect_to_url(short_code: str, db: Session = Depends(get_db), request: Request = None):
     """
     - query the database to filter based on the short code
     - if no result found, return 404 error
     - if there is result, increase visit_count by one, commit this change to the database
-    - redirect to the long_url
+    - if the request is coming from api, return json with long_url and visit_count
+    - if the request is coming from the browser (UI), redirect to the long_url
     """
     db_url_search_result = db.query(URL).filter(URL.shortcode == short_code).first()
 
@@ -58,6 +59,9 @@ def redirect_to_url(short_code: str, db: Session = Depends(get_db)):
 
     db_url_search_result.visit_count += 1
     db.commit()
+
+    if request and "application" and "application/json" in request.headers.get("accept", ""):
+        return {"long_url": str(db_url_search_result.long_url), "visit_count": db_url_search_result.visit_count}
 
     return RedirectResponse(url=str(db_url_search_result.long_url))
 

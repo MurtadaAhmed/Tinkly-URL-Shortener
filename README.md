@@ -7,7 +7,7 @@ uvicorn main:app --reload
 
 
 
-1. Send POST request to /shorten/:
+1. Send POST request to /shorten/ (can be tested using Swagger UI http://127.0.0.1:8000/docs):
 ```json
 {
   "long_url": "https://example.com"
