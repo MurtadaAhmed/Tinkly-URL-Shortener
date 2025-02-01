@@ -9,7 +9,7 @@ def test_homepage():
     # test if the home page loads successfully by checking status code and returned text
     response = client.get("/")
     assert response.status_code == 200
-    assert "URL Shortener with FastAPI" in response.text
+    assert "Tinkly-URL-Shortener" in response.text
 
 
 
