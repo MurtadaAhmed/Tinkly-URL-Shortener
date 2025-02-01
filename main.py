@@ -10,7 +10,7 @@ from fastapi.staticfiles import StaticFiles
 
 from database import SessionLocal, URL
 
-WEBSITE_URL = os.getenv("WEBSITE_URL","http://127.0.0.1:80")
+WEBSITE_URL = os.getenv("WEBSITE_URL","http://127.0.0.1")
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
