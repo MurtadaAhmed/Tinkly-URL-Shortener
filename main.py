@@ -12,8 +12,12 @@ from database import SessionLocal, URL
 
 WEBSITE_URL = os.getenv("WEBSITE_URL","http://127.0.0.1")
 app = FastAPI()
-templates = Jinja2Templates(directory="templates")
-app.mount("/static", StaticFiles(directory="static"), name="static")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+STATIC_DIR = os.path.join(BASE_DIR, "static")
+TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
+
+templates = Jinja2Templates(directory=TEMPLATES_DIR)
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 def get_db():
     db = SessionLocal()
@@ -79,7 +83,7 @@ def get_url_stats(short_code: str, db: Session = Depends(get_db)):
     """
     - query the database to filter based on the short code
     - if no result found, return 404 error
-    - if there is result, return the short_url, long_url and visit_count
+    - if there is result, return the short_url, long_url and visit_count as json
     """
     db_url_search_result = db.query(URL).filter(URL.shortcode == short_code).first()
 
