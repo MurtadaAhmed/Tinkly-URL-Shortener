@@ -8,9 +8,11 @@ document.getElementById("shorten-btn").addEventListener("click", async function(
     });
 
     let data = await response.json();
+    let shortUrlContainer =  document.getElementById("short_url");
     if (data.short_url === undefined) {
-        document.getElementById("short_url").innerHTML = `Enter full URL (with http:// or https://)`;
+        shortUrlContainer.innerHTML = `<p class="error-message">Enter full URL (with http:// or https://)</p>`;
     } else {
-        document.getElementById("short_url").innerHTML = `Short URL: <a href="${data.short_url}" target="_blank">${data.short_url}</a>`;
+        shortUrlContainer.innerHTML = `<p>Short URL:</p> 
+                                        <a href="${data.short_url}" target="_blank">${data.short_url}</a>`;
     }
 })
