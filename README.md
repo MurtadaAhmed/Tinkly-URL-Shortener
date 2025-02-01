@@ -1,4 +1,4 @@
-# URL-Shortener
+# Tinkly - URL Shortener
 
 A. Run locally for development:
 ```commandline
