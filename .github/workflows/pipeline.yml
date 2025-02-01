@@ -28,5 +28,5 @@ jobs:
 
       - name: Run Tests
         run: |
-          cd tests
-          pytest .
+          export PYTHONPATH=$(pwd)
+          pytest tests
