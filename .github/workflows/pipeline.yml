@@ -28,4 +28,5 @@ jobs:
 
       - name: Run Tests
         run: |
-          pytest tests
+          cd tests
+          pytest .
