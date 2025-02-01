@@ -1,0 +1,31 @@
+name: CI/CD popline
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@3
+
+      - name: Setup python 3.12
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.12
+
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run Tests
+        run: |
+          pytest tests
