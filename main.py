@@ -141,7 +141,7 @@ def register(request: Request, username: str = Form(...), password: str = Form(.
     db.add(user)
     db.commit()
     request.session["username"] = user.username
-    return RedirectResponse(url="/dashboard/", status_code=status.HTTP_303_SEE_OTHER)
+    return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
 
 @app.get("/login/", response_class=HTMLResponse)
 def login_page(request: Request):
@@ -175,6 +175,8 @@ def dashboard(request: Request, current_user: User = Depends(get_current_user), 
     Get the urls from the database for the current logged-in user
     Render the dashboard.html template, and send the request and the user_urls to it
     """
+    if not current_user:
+        return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
     user_urls = db.query(URL).filter(URL.owner_id == current_user.id).all()
     return templates.TemplateResponse("dashboard.html", {"request": request, "user_urls": user_urls, "current_user": current_user})
 
