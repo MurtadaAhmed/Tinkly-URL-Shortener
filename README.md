@@ -84,16 +84,29 @@ If you prefer using Docker, you can easily deploy this app using the following s
     - **Without a domain (localhost)**:
 
         ```bash
-        docker run -d -p 80:80 -e WEBSITE_URL="http://127.0.0.1" tinkly-url-shortener
+        docker run -d -p 80:80 -e WEBSITE_URL="http://127.0.0.1" --name tinkly-container tinkly-url-shortener
         ```
 
     - **With a domain** (replace `yourdomain.com` with your domain):
 
         ```bash
-        docker run -d -p 80:80 -e WEBSITE_URL="https://yourdomain.com" tinkly-url-shortener
+        docker run -d -p 80:80 -e WEBSITE_URL="https://yourdomain.com" --name tinkly-container tinkly-url-shortener
         ```
 
 3. Access your application at `http://127.0.0.1` (or `https://yourdomain.com` if using a domain).
+
+4. Create admin account:
+```commandline
+docker exec -it tinkly-container  /bin/bash
+```
+ 
+```commandline
+python create_admin.py
+```
+
+Then follow the prompt by entering the username and the password.
+
+Admin Panel is available on http://127.0.0.1/admin/ after logging in as admin.
 
 ---
 
