@@ -21,6 +21,10 @@
     <button id="login" onclick="window.location.href='/login/'">Login</button>
     <button id="register" onclick="window.location.href='/register/'">Register</button>
     {% else %}
+    {% if current_user.is_admin %}
+    <button id="adminpanel" onclick="window.location.href='/admin/'">Admin Panel</button>
+    {% endif %}
+
     <button id="dashboard" onclick="window.location.href='/dashboard/'">Dashboard</button>
     <button id="logout" onclick="window.location.href='/logout/'">Logout</button>
     {% endif %}

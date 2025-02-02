@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, String, Integer, ForeignKey
+from sqlalchemy import create_engine, Column, String, Integer, ForeignKey, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from passlib.context import CryptContext
@@ -11,7 +11,7 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["argon2", "bcrypt", "pbkdf2_sha256"], deprecated="auto")
 
 class User(Base):
     __tablename__ = "users"
@@ -19,6 +19,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
     hashed_password = Column(String)
+    is_admin = Column(Boolean, default=False)
     urls = relationship("URL", back_populates="owner")
 
 class URL(Base):
@@ -27,7 +28,7 @@ class URL(Base):
     shortcode = Column(String, primary_key=True, index=True)
     long_url = Column(String, nullable=False)
     visit_count= Column(Integer, default=0)
-    owner_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    owner_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=True)
     owner = relationship("User", back_populates="urls")
 
 Base.metadata.create_all(bind=engine)
