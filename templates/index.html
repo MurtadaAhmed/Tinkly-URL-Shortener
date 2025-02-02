@@ -16,7 +16,14 @@
 <div id="short_url">
 
 </div>
-
+<br>
+    {% if not current_user %}
+    <button id="login" onclick="window.location.href='/login/'">Login</button>
+    <button id="register" onclick="window.location.href='/register/'">Register</button>
+    {% else %}
+    <button id="dashboard" onclick="window.location.href='/dashboard/'">Dashboard</button>
+    <button id="logout" onclick="window.location.href='/logout/'">Logout</button>
+    {% endif %}
     </div>
 <script src="/static/script.js"></script>
 </body>
