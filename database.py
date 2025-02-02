@@ -20,7 +20,7 @@ class User(Base):
     username = Column(String, unique=True, index=True)
     hashed_password = Column(String)
     is_admin = Column(Boolean, default=False)
-    urls = relationship("URL", back_populates="owner")
+    urls = relationship("URL", back_populates="owner", cascade="all, delete-orphan")
 
 class URL(Base):
     __tablename__ = "urls"
