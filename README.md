@@ -8,10 +8,16 @@
 ## Features
 
 - **URL Shortening**: Generate short links from long URLs.
+- **User Accounts**: Ability to register an account to track the generated short URLs through the dashboard.
 - **Automatic Redirection**: Shortened URLs redirect to the original long URL.
 - **Visit Tracking**: Track the number of visits for each short URL.
 - **Statistics**: View the visit count and other details for each shortened URL.
+- **Admin Panel**: Track, edit and delete registered users. Also create user accounts and track the generated short URLs and delete them.
 - **API Support**: Interact with the service programmatically.
+
+![img_2.png](img_2.png)
+
+![img_3.png](img_3.png)
 
 ---
 
