@@ -2,7 +2,7 @@
 
 **Tinkly** is a simple and fast URL shortening service built using **FastAPI** and **SQLAlchemy** for database interaction. This project allows users to shorten URLs, redirect them, and track the number of visits for each short URL.
 
-![img.png](img.png)
+![img_1.png](img_1.png)
 ---
 
 ## Features
