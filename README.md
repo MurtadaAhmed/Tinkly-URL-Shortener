@@ -56,8 +56,16 @@
     ```bash
     uvicorn main:app --reload --port 80
     ```
-
 Your app will be available at `http://127.0.0.1:80`.
+
+6. Create admin account:
+
+    ```bash
+    python create_admin.py
+    ```
+The follow the prompt by entering the username and the password
+
+Admin Panel is available on http://127.0.0.1/admin/ after logging in as admin.
 
 ---
 
