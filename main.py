@@ -198,7 +198,9 @@ def delete_url(short_code: str, current_user: User = Depends(get_current_user), 
 
 @app.get("/admin/")
 def admin_panel(request: Request, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    if not current_user or not current_user.is_admin:
+    if not current_user:
+        return RedirectResponse(url="/login/", status_code=status.HTTP_303_SEE_OTHER)
+    if not current_user.is_admin:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not Authorized")
     users = db.query(User).all()
     urls = db.query(URL).all()
