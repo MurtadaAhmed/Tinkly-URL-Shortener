@@ -39,9 +39,41 @@ button {
     transition: background-color 0.3s ease;
 }
 
+button#login {
+    background-color: #65ad65;
+}
+button#login:hover {
+    background-color: #3a653a;
+}
+
+button#register {
+    background-color: #c3936c;
+}
+button#register:hover {
+    background-color: #836348;
+}
+
+
+button#dashboard {
+    background-color: #a3974e;
+}
+button#dashboard:hover {
+    background-color: #81783b;
+}
+
+button#logout {
+    background-color: #bc5858;
+}
+button#logout:hover {
+    background-color: #7e3b3b;
+}
+
+
 button:hover {
     background-color: #0056b3;
 }
+
+
 
 .short-url-container {
     margin-top: 20px;
@@ -59,4 +91,57 @@ button:hover {
 
 .short-url-container a:hover {
     text-decoration: underline;
+}
+
+
+.url-list {
+    list-style: none;
+    padding: 0;
+}
+
+.url-item {
+    background-color: #f9f9f9;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.url-details {
+    display: flex;
+    align-items: center;
+}
+
+.short-url {
+    color: #007bff;
+    font-size: 16px;
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+.short-url:hover {
+    text-decoration: underline;
+}
+
+.visit-count {
+    font-size: 14px;
+    color: #888;
+}
+
+/* Delete button */
+.delete-btn {
+    background-color: #f44336;
+    color: white;
+    padding: 8px 15px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.delete-btn:hover {
+    background-color: #e53935;
 }

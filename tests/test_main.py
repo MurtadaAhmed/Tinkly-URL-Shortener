@@ -11,8 +11,6 @@ def test_homepage():
     assert response.status_code == 200
     assert "Tinkly-URL-Shortener" in response.text
 
-
-
 @pytest.mark.asyncio
 def test_shorten_url():
     # test url shortening returning 200 status and short_url in the json response
