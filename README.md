@@ -175,7 +175,118 @@ You can interact with the Tinkly URL Shortener programmatically via its API.
     }
     ```
 
+### **User Authentication**
+
+#### **Register a New User**
+
+- **Endpoint**: `/register/`
+- **Method**: `POST`
+- **Request Body**:
+    ```json
+    {
+      "username": "your_username",
+      "password": "your_password"
+    }
+    ```
+- **Response**: Redirects to `/` upon successful registration.
+
+#### **Login**
+
+- **Endpoint**: `/login/`
+- **Method**: `POST`
+- **Request Body**:
+    ```json
+    {
+      "username": "your_username",
+      "password": "your_password"
+    }
+    ```
+- **Response**: Redirects to `/` upon successful login.
+
+#### **Logout**
+
+- **Endpoint**: `/logout/`
+- **Method**: `GET`
+- **Response**: Redirects to `/` upon successful logout.
+
 ---
+
+### **Dashboard**
+
+#### **View User Dashboard**
+
+- **Endpoint**: `/dashboard/`
+- **Method**: `GET`
+- **Description**: Displays the dashboard with all the URLs shortened by the logged-in user.
+
+---
+
+### **URL Management**
+
+#### **Delete a Short URL**
+
+- **Endpoint**: `/{short_code}/delete`
+- **Method**: `GET`
+- **Description**: Deletes a short URL owned by the logged-in user.
+- **Response**: Redirects to `/dashboard/` upon successful deletion.
+
+---
+
+### **Admin Panel**
+
+#### **View Admin Panel**
+
+- **Endpoint**: `/admin/`
+- **Method**: `GET`
+- **Description**: Displays the admin panel with all users and URLs (only accessible by admin users).
+
+#### **Delete a User (Admin Only)**
+
+- **Endpoint**: `/admin/user/delete/{user_id}`
+- **Method**: `POST`
+- **Description**: Deletes a user (only accessible by admin users).
+- **Response**: Redirects to `/admin/` upon successful deletion.
+
+#### **Edit a User (Admin Only)**
+
+- **Endpoint**: `/admin/user/edit/{user_id}`
+- **Method**: `POST`
+- **Request Body**:
+    ```json
+    {
+      "username": "new_username",
+      "password": "new_password",
+      "is_admin": true
+    }
+    ```
+- **Description**: Edits a user's details (only accessible by admin users).
+- **Response**: Redirects to `/admin/` upon successful edit.
+
+#### **Delete a URL (Admin Only)**
+
+- **Endpoint**: `/admin/url/delete/{short_code}`
+- **Method**: `POST`
+- **Description**: Deletes a URL (only accessible by admin users).
+- **Response**: Redirects to `/admin/` upon successful deletion.
+
+#### **Create a New User (Admin Only)**
+
+- **Endpoint**: `/admin/user/create`
+- **Method**: `POST`
+- **Request Body**:
+    ```json
+    {
+      "username": "new_username",
+      "password": "new_password",
+      "is_admin": true
+    }
+    ```
+- **Description**: Creates a new user (only accessible by admin users).
+- **Response**: Redirects to `/admin/` upon successful creation.
+
+
+### **Example Usage**
+
 
 ## Testing
 
