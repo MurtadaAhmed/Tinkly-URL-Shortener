@@ -189,6 +189,9 @@ def delete_url(short_code: str, current_user: User = Depends(get_current_user), 
     If there is a match, delete the url from the database
     Return success message that the url is deleted
     """
+    if not current_user:
+        return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
+
     db_url = db.query(URL).filter(URL.shortcode == short_code, URL.owner_id == current_user.id).first()
     if not db_url:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="URL not found")
