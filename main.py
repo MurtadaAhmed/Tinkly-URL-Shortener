@@ -193,3 +193,77 @@ def delete_url(short_code: str, current_user: User = Depends(get_current_user), 
     db.delete(db_url)
     db.commit()
     return RedirectResponse(url="/dashboard/", status_code=status.HTTP_303_SEE_OTHER)
+
+
+
+@app.get("/admin/")
+def admin_panel(request: Request, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    if not current_user or not current_user.is_admin:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not Authorized")
+    users = db.query(User).all()
+    urls = db.query(URL).all()
+
+    return templates.TemplateResponse("admin.html", {"request": request, "users": users, "urls": urls, "current_user": current_user})
+
+
+@app.post("/admin/user/delete/{user_id}")
+def admin_delete_user(user_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    if not current_user or not current_user.is_admin:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    db.delete(user)
+    db.commit()
+    return RedirectResponse(url="/admin/", status_code=status.HTTP_303_SEE_OTHER)
+
+
+@app.post("/admin/user/edit/{user_id}")
+def admin_edit_user(
+        user_id: int,
+        username: str = Form(...),
+        password: str = Form(...),
+        is_admin: bool = Form(False),
+        current_user: User = Depends(get_current_user),
+        db: Session = Depends(get_db)):
+    if not current_user or not current_user.is_admin:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
+
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    user.username = username
+    if password:
+        user.hashed_password = pwd_context.hash(password)
+    user.is_admin = is_admin
+    db.commit()
+    return RedirectResponse(url="/admin/", status_code=status.HTTP_303_SEE_OTHER)
+
+@app.post("/admin/url/delete/{short_code}")
+def admin_delete_url(short_code: str, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    if not current_user or not current_user.is_admin:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
+    url = db.query(URL).filter(URL.shortcode == short_code).first()
+    if not url:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="URL not found")
+    db.delete(url)
+    db.commit()
+    return RedirectResponse(url="/admin/", status_code=status.HTTP_303_SEE_OTHER)
+
+
+@app.post("/admin/user/create")
+def admin_create_user(username: str = Form(...),
+                      password: str = Form(...),
+                      is_admin: bool = Form(False),
+                      current_user: User = Depends(get_current_user),
+                      db: Session = Depends(get_db)):
+    if not current_user or not current_user.is_admin:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
+    db_user = db.query(User).filter(User.username == username).first()
+    if db_user:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User already registered")
+    hashed_password = pwd_context.hash(password)
+    user = User(username=username, hashed_password=hashed_password, is_admin=is_admin)
+    db.add(user)
+    db.commit()
+    return RedirectResponse(url="/admin/", status_code=status.HTTP_303_SEE_OTHER)

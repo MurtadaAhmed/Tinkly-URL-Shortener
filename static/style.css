@@ -68,6 +68,13 @@ button#logout:hover {
     background-color: #7e3b3b;
 }
 
+button#adminpanel {
+    background-color: #65ad65;
+}
+button#adminpanel:hover {
+    background-color: #488048;
+}
+
 
 button:hover {
     background-color: #0056b3;
@@ -145,3 +152,7 @@ button:hover {
 .delete-btn:hover {
     background-color: #e53935;
 }
+
+
+
+
