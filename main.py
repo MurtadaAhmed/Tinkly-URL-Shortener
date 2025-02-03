@@ -1,6 +1,8 @@
 import string
 import random
 import os
+from calendar import error
+
 from fastapi import FastAPI, Depends, HTTPException, Request, status, Form
 from pydantic import BaseModel, HttpUrl
 from sqlalchemy.orm import Session
@@ -121,8 +123,8 @@ def get_url_stats(short_code: str, db: Session = Depends(get_db)):
 # user authentication
 
 @app.get("/register/")
-def register_page(request: Request):
-    return templates.TemplateResponse("register.html", {"request": request})
+def register_page(request: Request, error: str = None):
+    return templates.TemplateResponse("register.html", {"request": request, "error": error})
 
 @app.post("/register/")
 def register(request: Request, username: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
@@ -134,7 +136,10 @@ def register(request: Request, username: str = Form(...), password: str = Form(.
     """
     db_user = db.query(User).filter(User.username == username).first()
     if db_user:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already registered")
+        if "application/json" in request.headers.get("accept", ""):
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already registered")
+        error = "Username already registered"
+        return templates.TemplateResponse("register.html", {"request": request, "error": error})
     hashed_password = pwd_context.hash(password)
     user = User(username=username, hashed_password=hashed_password)
     db.add(user)
