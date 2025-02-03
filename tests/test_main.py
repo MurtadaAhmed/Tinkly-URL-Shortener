@@ -129,7 +129,6 @@ def test_logout():
     client.post("/register/", data={"username": "testuser100", "password": "testpass100"})
     client.post("/login/", data={"username": "testuser100", "password": "testpass100"})
 
-    # Log out the user
     response = client.get("/logout/", follow_redirects=False)
     assert response.status_code == 303
     assert response.headers["location"] == "/"
