@@ -143,8 +143,8 @@ def register(request: Request, username: str = Form(...), password: str = Form(.
     return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
 
 @app.get("/login/", response_class=HTMLResponse)
-def login_page(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request})
+def login_page(request: Request, error: str = None):
+    return templates.TemplateResponse("login.html", {"request": request, "error": error})
 @app.post("/login/")
 def login(request: Request,username: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
     """
@@ -154,7 +154,10 @@ def login(request: Request,username: str = Form(...), password: str = Form(...),
     """
     user = db.query(User).filter(User.username == username).first()
     if not user or not pwd_context.verify(password, user.hashed_password):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect username or password")
+        if "application/json" in request.headers.get("accept", ""):
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect username or password")
+        error = "Incorrect username or password"
+        return templates.TemplateResponse("login.html", {"request": request, "error": error})
     request.session["username"] = user.username
     return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
 
