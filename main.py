@@ -2,7 +2,6 @@ import string
 import random
 import os
 from fastapi import FastAPI, Depends, HTTPException, Request, status, Form
-from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from pydantic import BaseModel, HttpUrl
 from sqlalchemy.orm import Session
 from fastapi.responses import RedirectResponse, HTMLResponse
@@ -13,7 +12,7 @@ from starlette.middleware.sessions import SessionMiddleware
 
 WEBSITE_URL = os.getenv("WEBSITE_URL","http://127.0.0.1")
 app = FastAPI()
-app.add_middleware(SessionMiddleware, secret_key="your-secret-key")
+app.add_middleware(SessionMiddleware, secret_key="!@#$#%%^^&&*(*()_+_)(*&^%")
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_DIR = os.path.join(BASE_DIR, "static")
 TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
@@ -187,7 +186,7 @@ def delete_url(short_code: str, current_user: User = Depends(get_current_user), 
     Search the database for match for the url to be deleted and the owner of it
     If there is no match, raise 404 status code
     If there is a match, delete the url from the database
-    Return success message that the url is deleted
+    Redirect the user to the dashboard page
     """
     if not current_user:
         return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
@@ -203,6 +202,11 @@ def delete_url(short_code: str, current_user: User = Depends(get_current_user), 
 
 @app.get("/admin/")
 def admin_panel(request: Request, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """
+    If guest user tries to access the admin page, get redirected to login page
+    if non-admin user tries to access the admin page, returns 403 forbidden
+    Query the database for all the users and all the urls, and render them with current_user to the admin page
+    """
     if not current_user:
         return RedirectResponse(url="/login/", status_code=status.HTTP_303_SEE_OTHER)
     if not current_user.is_admin:
@@ -215,6 +219,13 @@ def admin_panel(request: Request, current_user: User = Depends(get_current_user)
 
 @app.post("/admin/user/delete/{user_id}")
 def admin_delete_user(user_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """
+    Check if an admin tries to access the page
+    if not, return 403
+    if admin, query the database for that user
+    if user not found return 404
+    if user is found, delete it from the database and return back to admin page
+    """
     if not current_user or not current_user.is_admin:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
     user = db.query(User).filter(User.id == user_id).first()
@@ -233,6 +244,12 @@ def admin_edit_user(
         is_admin: bool = Form(False),
         current_user: User = Depends(get_current_user),
         db: Session = Depends(get_db)):
+    """
+    check if admin is accessing the edit feature
+    if not, return 403
+    if admin, query the database for the user, make the change to username/password/is_admin
+    return back to admin page
+    """
     if not current_user or not current_user.is_admin:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
 
@@ -248,6 +265,13 @@ def admin_edit_user(
 
 @app.post("/admin/url/delete/{short_code}")
 def admin_delete_url(short_code: str, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """
+    check if admin is accessing the delete url feature
+    if not, return 403
+    if admin, query the database for the url
+    if url not found, return 404
+    if url found, delete it and return back to admin page
+    """
     if not current_user or not current_user.is_admin:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
     url = db.query(URL).filter(URL.shortcode == short_code).first()
@@ -264,6 +288,14 @@ def admin_create_user(username: str = Form(...),
                       is_admin: bool = Form(False),
                       current_user: User = Depends(get_current_user),
                       db: Session = Depends(get_db)):
+    """
+    check if admin is accessing the create user feature
+    if not, return 403
+    if admin, query the database to see if username already exist
+    if username already exist, return 400
+    if username is unique, hash the password and create new user
+    return back to admin page
+    """
     if not current_user or not current_user.is_admin:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
     db_user = db.query(User).filter(User.username == username).first()
