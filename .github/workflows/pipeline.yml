@@ -30,3 +30,17 @@ jobs:
         run: |
           export PYTHONPATH=$(pwd)
           pytest tests
+
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger Render Deployment
+        run: |
+          curl -X POST "https://api.render.com/v1/services/srv-cuhp15dds78s73f0pu8g/deploys" \
+               -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+               -H "Accept: application/json" \
+               -H "Content-Type: application/json" \
+               --data '{}'
