@@ -11,6 +11,9 @@
 <h2>Login</h2>
     <form action="/login/" method="post">
 <!--        <label for="username">Username:</label>-->
+        {% if error %}
+        <div class="error-message">{{ error }}</div>
+        {% endif %}
         <input type="text" id="username" name="username" required placeholder="Enter your username">
         <br>
 <!--        <label for="password">Password:</label>-->

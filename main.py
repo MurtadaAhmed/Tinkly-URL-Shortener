@@ -1,6 +1,8 @@
 import string
 import random
 import os
+from calendar import error
+
 from fastapi import FastAPI, Depends, HTTPException, Request, status, Form
 from pydantic import BaseModel, HttpUrl
 from sqlalchemy.orm import Session
@@ -121,8 +123,8 @@ def get_url_stats(short_code: str, db: Session = Depends(get_db)):
 # user authentication
 
 @app.get("/register/")
-def register_page(request: Request):
-    return templates.TemplateResponse("register.html", {"request": request})
+def register_page(request: Request, error: str = None):
+    return templates.TemplateResponse("register.html", {"request": request, "error": error})
 
 @app.post("/register/")
 def register(request: Request, username: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
@@ -134,7 +136,10 @@ def register(request: Request, username: str = Form(...), password: str = Form(.
     """
     db_user = db.query(User).filter(User.username == username).first()
     if db_user:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already registered")
+        if "application/json" in request.headers.get("accept", ""):
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already registered")
+        error = "Username already registered"
+        return templates.TemplateResponse("register.html", {"request": request, "error": error}, status_code=status.HTTP_400_BAD_REQUEST)
     hashed_password = pwd_context.hash(password)
     user = User(username=username, hashed_password=hashed_password)
     db.add(user)
@@ -143,8 +148,8 @@ def register(request: Request, username: str = Form(...), password: str = Form(.
     return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
 
 @app.get("/login/", response_class=HTMLResponse)
-def login_page(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request})
+def login_page(request: Request, error: str = None):
+    return templates.TemplateResponse("login.html", {"request": request, "error": error})
 @app.post("/login/")
 def login(request: Request,username: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
     """
@@ -154,7 +159,10 @@ def login(request: Request,username: str = Form(...), password: str = Form(...),
     """
     user = db.query(User).filter(User.username == username).first()
     if not user or not pwd_context.verify(password, user.hashed_password):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect username or password")
+        if "application/json" in request.headers.get("accept", ""):
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect username or password")
+        error = "Incorrect username or password"
+        return templates.TemplateResponse("login.html", {"request": request, "error": error}, status_code=status.HTTP_401_UNAUTHORIZED)
     request.session["username"] = user.username
     return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
 

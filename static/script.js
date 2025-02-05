@@ -15,14 +15,13 @@ async function shortenUrl() {
     });
 
     let data = await response.json();
-    let shortUrlContainer = document.getElementById("short_url");
+    let error = document.getElementById("error");
+    let shortUrl = document.getElementById("short-url");
 
-    shortUrlContainer.className = "short-url-container";
 
     if (data.short_url === undefined) {
-        shortUrlContainer.innerHTML = `<p class="error-message">Enter full URL (with http:// or https://)</p>`;
+        error.innerHTML = `<p class="error-message">Enter full URL (with http:// or https://)</p>`;
     } else {
-        shortUrlContainer.innerHTML = `<p>Short URL:</p> 
-                                        <a href="${data.short_url}" target="_blank">${data.short_url}</a>`;
+        shortUrl.value = `${data.short_url}`;
     }
 }
