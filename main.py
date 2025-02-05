@@ -209,7 +209,7 @@ def delete_url(short_code: str, current_user: User = Depends(get_current_user), 
 
 
 @app.get("/admin/")
-def admin_panel(request: Request, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+def admin_panel(request: Request, current_user: User = Depends(get_current_user), db: Session = Depends(get_db), error: str = None):
     """
     If guest user tries to access the admin page, get redirected to login page
     if non-admin user tries to access the admin page, returns 403 forbidden
@@ -222,7 +222,7 @@ def admin_panel(request: Request, current_user: User = Depends(get_current_user)
     users = db.query(User).all()
     urls = db.query(URL).all()
 
-    return templates.TemplateResponse("admin.html", {"request": request, "users": users, "urls": urls, "current_user": current_user})
+    return templates.TemplateResponse("admin.html", {"request": request, "users": users, "urls": urls, "current_user": current_user, "error": error})
 
 
 @app.post("/admin/user/delete/{user_id}")
@@ -291,7 +291,7 @@ def admin_delete_url(short_code: str, current_user: User = Depends(get_current_u
 
 
 @app.post("/admin/user/create")
-def admin_create_user(username: str = Form(...),
+def admin_create_user(request: Request, username: str = Form(...),
                       password: str = Form(...),
                       is_admin: bool = Form(False),
                       current_user: User = Depends(get_current_user),
@@ -308,7 +308,10 @@ def admin_create_user(username: str = Form(...),
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
     db_user = db.query(User).filter(User.username == username).first()
     if db_user:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User already registered")
+        if "application/json" in request.headers.get("accept", ""):
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User already registered")
+        error = "Username already registered"
+        return RedirectResponse(url=f"/admin/?error=Username+already+registered", status_code=status.HTTP_303_SEE_OTHER)
     hashed_password = pwd_context.hash(password)
     user = User(username=username, hashed_password=hashed_password, is_admin=is_admin)
     db.add(user)
