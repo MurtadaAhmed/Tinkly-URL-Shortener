@@ -139,7 +139,7 @@ def register(request: Request, username: str = Form(...), password: str = Form(.
         if "application/json" in request.headers.get("accept", ""):
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already registered")
         error = "Username already registered"
-        return templates.TemplateResponse("register.html", {"request": request, "error": error})
+        return templates.TemplateResponse("register.html", {"request": request, "error": error}, status_code=status.HTTP_400_BAD_REQUEST)
     hashed_password = pwd_context.hash(password)
     user = User(username=username, hashed_password=hashed_password)
     db.add(user)
@@ -162,7 +162,7 @@ def login(request: Request,username: str = Form(...), password: str = Form(...),
         if "application/json" in request.headers.get("accept", ""):
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect username or password")
         error = "Incorrect username or password"
-        return templates.TemplateResponse("login.html", {"request": request, "error": error})
+        return templates.TemplateResponse("login.html", {"request": request, "error": error}, status_code=status.HTTP_401_UNAUTHORIZED)
     request.session["username"] = user.username
     return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
 

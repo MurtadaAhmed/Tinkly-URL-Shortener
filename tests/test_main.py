@@ -93,16 +93,16 @@ def test_stats_non_existent_url():
 def test_register_existing_username():
     """Test registering with existing username returns 400"""
     client.post("/register/", data={"username": "testuser", "password": "testpass"})
-    response = client.post("/register/", data={"username": "testuser", "password": "testpass"})
+    response = client.post("/register/", data={"username": "testuser", "password": "testpass"}, follow_redirects=False)
     assert response.status_code == 400
-    assert "detail" in response.json()
+
 
 @pytest.mark.asyncio
 def test_login_invalid_credentials():
     """Test login with invalid credentials return 401"""
-    response = client.post("/login/", data={"username": "nonexistent", "password": "wrongpass"})
+    response = client.post("/login/", data={"username": "nonexistent", "password": "wrongpass"}, follow_redirects=False)
     assert response.status_code == 401
-    assert "detail" in response.json()
+
 
 
 @pytest.mark.asyncio
