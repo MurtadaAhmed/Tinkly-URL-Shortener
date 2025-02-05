@@ -1,7 +1,7 @@
 # Tinkly - URL Shortener
 [![CI/CD popline](https://github.com/MurtadaAhmed/Tinkly-URL-Shortener/actions/workflows/pipeline.yml/badge.svg)](https://github.com/MurtadaAhmed/Tinkly-URL-Shortener/actions/workflows/pipeline.yml)
 
-🚀 **Live Demo on Render:** [Tinkly URL Shortener](https://tinkly-url-shortener.onrender.com/)  
+🚀 **Live Demo on Render:** <a href="https://tinkly-url-shortener.onrender.com/" target="_blank">Tinkly URL Shortener</a>
 
 **Tinkly** is a simple and fast URL shortening service built using **FastAPI** and **SQLAlchemy** for database interaction. This project allows users to shorten URLs, redirect them, and track the number of visits for each short URL.
 
