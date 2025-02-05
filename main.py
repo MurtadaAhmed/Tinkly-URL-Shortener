@@ -1,7 +1,6 @@
 import string
 import random
 import os
-from calendar import error
 
 from fastapi import FastAPI, Depends, HTTPException, Request, status, Form
 from pydantic import BaseModel, HttpUrl
